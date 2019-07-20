@@ -34,6 +34,13 @@
 
 unit DebugInfo;
 
+{$IFDEF KERNEL}
+  {$IFNDEF DEBUGEX}
+    {$DEFINE DEBUGEX}
+  {$ENDIF}
+{$ENDIF}
+
+
 interface
 
 uses ErrorsDef;
@@ -75,7 +82,7 @@ type
     EIP, ESP, EBP : Pointer;
   end;
 
-{$IFDEF KERNEL}
+{$IFDEF DEBUGEX}
   PDebugEx = ^TDebugEx;
   TDebugEx = record
     CR0, CR2, CR3, CR4 : LongWord;
@@ -109,7 +116,7 @@ type
   // Obtem eflags
   function GetEFlags : LongWord;
 
-{$IFDEF KERNEL}
+{$IFDEF DEBUGEX}
   // Obtem registradores de controle
   function GetCR0 : LongWord;
   function GetCR2 : LongWord;
@@ -133,7 +140,7 @@ type
   function GetDebugInfo : TDebugBas;
   function GetDebugStack(SkipFrames, OffsetESP : LongWord) : TDebugStack;
 
-  {$IFDEF KERNEL}
+  {$IFDEF DEBUGEX}
     function GetDebugEx : TDebugEx;
   {$ENDIF}
 
@@ -270,7 +277,7 @@ asm
 end;
 
 
-{$IFDEF KERNEL}
+{$IFDEF DEBUGEX}
   { Retorna o valor do registrador CR0 }
   function GetCR0 : LongWord; assembler; nostackframe;
   asm
@@ -613,7 +620,7 @@ begin
 end;
 
 
-{$IFDEF KERNEL}
+{$IFDEF DEBUGEX}
 function GetDebugEx : TDebugEx;
 var
   RegCR0, RegCR2, RegCR3, RegCR4 : LongWord;
